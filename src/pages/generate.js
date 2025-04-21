@@ -204,7 +204,7 @@ export default function GeneratePage() {
                 type="submit"
                 disabled={isSubmitting}
                 className={`
-                  bg-primary hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg 
+                  bg-gray-200 hover:bg-gray-300  text-gray-800 font-bold py-2 px-6 rounded-lg 
                   transition-colors ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}
                 `}
               >

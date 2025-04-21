@@ -1,13 +1,14 @@
 import '../app/globals.css'
-
+import { ThemeProvider } from '../lib/context/ThemeContext';
 import { WebsiteProvider } from '../lib/context/WebsiteContext';
 
-function MyApp({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
   return (
     <WebsiteProvider>
+ <ThemeProvider>
       <Component {...pageProps} />
+    </ThemeProvider>
     </WebsiteProvider>
+   
   );
 }
-
-export default MyApp;

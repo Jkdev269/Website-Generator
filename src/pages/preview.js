@@ -1,26 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/layout/Layout';
 import { useWebsite } from '../lib/context/WebsiteContext';
+import { generateLayout } from '../components/layout-generator';
+import colorThemes from '../components/layout-generator/ThemeManager';
 
 export default function PreviewPage() {
   const router = useRouter();
   const { websiteSpecs, generationStatus, generateWebsite } = useWebsite();
+  const [previewContent, setPreviewContent] = useState(null);
   
   // If no website specs, redirect to generate page
   useEffect(() => {
     if (!websiteSpecs) {
       router.replace('/generate');
+    } else {
+      // Generate preview content when specs are available
+      generatePreview();
     }
   }, [websiteSpecs, router]);
+  
+  // Generate preview content based on specs
+  const generatePreview = () => {
+    if (!websiteSpecs) return;
+    
+    // Transform websiteSpecs to the format expected by generateLayout
+    const layoutConfig = {
+      websiteType: websiteSpecs.type,
+      pages: Object.keys(websiteSpecs.pages),
+      // colorTheme: colorThemes,
+      colors: websiteSpecs.styles.colors,
+      companyName: websiteSpecs.name,
+      components: websiteSpecs.components
+    };
+    
+    // Generate the layout preview
+    const layout = generateLayout(layoutConfig);
+    setPreviewContent(layout);
+  };
   
   // Handle continue button click
   const handleContinue = async () => {
     try {
       await generateWebsite();
-      // In Day 4-5, we'll navigate to a builder page
-      // For now, we'll just alert the user
-      alert('Website generated! We will implement the live preview in the coming days.');
+      router.push('/builder');
     } catch (error) {
       console.error('Error generating website:', error);
     }
@@ -42,113 +65,128 @@ export default function PreviewPage() {
   
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Website Specifications</h1>
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Website Preview</h1>
         
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold">{websiteSpecs.name}</h2>
-              <p className="text-gray-600">{websiteSpecs.description}</p>
-            </div>
-            <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-medium">
-              {websiteSpecs.type.charAt(0).toUpperCase() + websiteSpecs.type.slice(1)}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left side - Website specs */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-8 sticky top-4">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold">{websiteSpecs.name}</h2>
+                  <p className="text-gray-600 text-sm">{websiteSpecs.description}</p>
+                </div>
+                <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                  {websiteSpecs.type.charAt(0).toUpperCase() + websiteSpecs.type.slice(1)}
+                </div>
+              </div>
+              
+              <hr className="my-4" />
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-md font-bold mb-2">Pages</h3>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <ul className="space-y-1 text-sm">
+                      {Object.keys(websiteSpecs.pages).map((page) => (
+                        <li key={page} className="flex items-center">
+                          <span className="bg-green-100 text-green-800 p-1 rounded mr-2 text-xs">✓</span>
+                          <span className="capitalize">{page}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-md font-bold mb-2">Components</h3>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="flex flex-wrap gap-2">
+                      {websiteSpecs.components.map((component) => (
+                        <span 
+                          key={component}
+                          className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs"
+                        >
+                          {component}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              
+                <div>
+                  <h3 className="text-md font-bold mb-2">Color Palette</h3>
+                  <div className="flex space-x-3 mb-4">
+                    {Object.entries(websiteSpecs.styles.colors).map(([name, color]) => (
+                      <div key={name} className="text-center">
+                        <div 
+                          className="w-8 h-8 rounded-full mx-auto mb-1" 
+                          style={{ backgroundColor: color }}
+                        ></div>
+                        <span className="text-xs text-gray-600">{name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-between items-center">
+                <button
+                  onClick={() => router.back()}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg text-sm transition-colors"
+                >
+                  Edit Details
+                </button>
+                
+                <button
+                  onClick={handleContinue}
+                  className={`
+                    bg-gray-200 hover:bg-gray-300  text-gray-800 font-bold py-2 px-4 rounded-lg text-sm
+                    transition-colors '}
+                  `}
+                  // disabled={generationStatus.isGenerating}
+                >
+                  {generationStatus.isGenerating ? 'Generating...' : 'Generate Website'}
+                </button>
+              </div>
             </div>
           </div>
           
-          <hr className="my-6" />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-lg font-bold mb-3">Pages</h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <ul className="space-y-2">
-                  {Object.keys(websiteSpecs.pages).map((page) => (
-                    <li key={page} className="flex items-center">
-                      <span className="bg-green-100 text-green-800 p-1 rounded mr-2">✓</span>
-                      <span className="capitalize">{page}</span>
-                    </li>
-                  ))}
-                </ul>
+          {/* Right side - Live preview */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+              <div className="bg-gray-100 border-b border-gray-200 p-3 flex items-center">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div className="mx-auto text-sm text-gray-500 font-medium">
+                  Preview: {websiteSpecs.name}
+                </div>
+              </div>
+              
+              <div className="h-[800px] overflow-y-auto border border-gray-100">
+                {previewContent ? (
+                  <div className="preview-container">
+                    {previewContent}
+                  </div>
+                ) : (
+                  <div className="flex justify-center items-center h-full">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
+                      <p className="mt-4 text-gray-500">Generating preview...</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             
-            <div>
-              <h3 className="text-lg font-bold mb-3">Components</h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="flex flex-wrap gap-2">
-                  {websiteSpecs.components.map((component) => (
-                    <span 
-                      key={component}
-                      className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm"
-                    >
-                      {component}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <div className="mt-4 text-sm text-gray-500 text-center">
+              This is a preview of how your website will look. The final version may vary slightly.
             </div>
           </div>
-          
-          <div className="mt-8">
-            <h3 className="text-lg font-bold mb-3">Color Palette</h3>
-            <div className="flex space-x-4 mb-6">
-              {Object.entries(websiteSpecs.styles.colors).map(([name, color]) => (
-                <div key={name} className="text-center">
-                  <div 
-                    className="w-12 h-12 rounded-full mx-auto mb-2" 
-                    style={{ backgroundColor: color }}
-                  ></div>
-                  <span className="text-xs text-gray-600">{name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <div className="mt-8">
-            <h3 className="text-lg font-bold mb-3">Typography</h3>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600">Heading Font</p>
-                  <p className="font-bold">{websiteSpecs.styles.typography.headingFont}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Body Font</p>
-                  <p className="font-bold">{websiteSpecs.styles.typography.bodyFont}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {websiteSpecs.originalPrompt && (
-            <div className="mt-8">
-              <h3 className="text-lg font-bold mb-3">Additional Requirements</h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-700">{websiteSpecs.originalPrompt}</p>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <button
-            onClick={() => router.back()}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg transition-colors"
-          >
-            Back
-          </button>
-          
-          <button
-            onClick={handleContinue}
-            className={`
-              bg-primary hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg 
-              transition-colors ${generationStatus.isGenerating ? 'opacity-70 cursor-not-allowed' : ''}
-            `}
-            disabled={generationStatus.isGenerating}
-          >
-            {generationStatus.isGenerating ? 'Generating...' : 'Continue to Website Generation'}
-          </button>
         </div>
       </div>
     </Layout>

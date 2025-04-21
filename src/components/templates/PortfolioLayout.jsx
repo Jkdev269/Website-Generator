@@ -41,12 +41,12 @@ return (
     <Header 
       title={name}
       navItems={[
-        { name: "Home", href: "/" },
+        { name: "Home", href: "#" },
         { name: "Portfolio", href: "#portfolio" },
         { name: "Testimonials", href: "#testimonials" },
         { name: "Contact", href: "#contact" }
       ]}
-      variant="transparent"
+      variant="default"
       {...headerProps}
     />
     

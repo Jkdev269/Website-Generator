@@ -1,11 +1,17 @@
+import { getElementStyles } from '../layout-generator/ThemeManager';
 export default function Hero({
     title = "Welcome to Our Website",
     subtitle = "We help you create amazing digital experiences",
     buttonText = "Get Started",
     buttonLink = "#",
     backgroundImage = "",
-    variant = "default" // default, centered, minimal, image
+    variant = "default" // default, centered, minimal, image,
+    ,
+    colorTheme
   }) {
+    const headingStyles = getElementStyles(colorTheme, 'heading');
+  const sectionStyles = getElementStyles(colorTheme, 'section');
+  const accentStyles = getElementStyles(colorTheme, 'accent');
     const baseClasses = "py-20 md:py-28";
     
     const variants = {
@@ -23,13 +29,14 @@ export default function Hero({
     
     return (
       <section 
+        // className={sectionStyles}
+        style={sectionStyles}
         className={variants[variant]}
-        style={variant === 'image' ? backgroundStyle : {}}
       >
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl ${variant === 'centered' ? 'mx-auto text-center' : ''}`}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">{title}</h1>
-            <p className="text-xl mb-8">{subtitle}</p>
+            <h1 style={headingStyles} className="text-4xl md:text-5xl font-bold mb-6">{title}</h1>
+            <p style={accentStyles}  className="text-xl mb-8">{subtitle}</p>
             <a 
               href={buttonLink} 
               className={`inline-block px-6 py-3 rounded-md font-medium ${

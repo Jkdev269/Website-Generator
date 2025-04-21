@@ -176,7 +176,7 @@ export function analyzeWebsiteType(websiteType) {
         secondary: '#60A5FA',
         accent: '#2563EB',
         text: '#1F2937',
-        background: '#F9FAFB',
+        background: '#3B82F6',
         light: '#EFF6FF',
         dark: '#1E3A8A',
       },

@@ -31,7 +31,7 @@ export default function BusinessLayout({
         {...headerProps}
       />
       
-      <main className="flex-grow pt-16">
+      <main className="flex-grow ">
         <Hero
           title={companyName}
           subtitle={tagline}
