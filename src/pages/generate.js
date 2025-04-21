@@ -7,9 +7,11 @@ import Select from '../components/ui/Select';
 import Textarea from '../components/ui/Textarea';
 import { validateFormData, enhanceFormData } from '../lib/utils/formValidator';
 import { useWebsite } from '../lib/context/WebsiteContext';
+import { useTheme } from '../lib/context/ThemeContext';
 
 export default function GeneratePage() {
   const router = useRouter();
+  const { setColorTheme } = useTheme();
   const { processFormData } = useWebsite();
   
   // Form state
@@ -58,12 +60,34 @@ export default function GeneratePage() {
     { value: 'neutral', label: 'Neutral - Minimal & Elegant' },
   ];
 
-  // Handle input changes
+  // // Handle input changes
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+    
+  //   // Clear error when field is modified
+  //   if (errors[name]) {
+  //     setErrors((prev) => ({
+  //       ...prev,
+  //       [name]: '',
+  //     }));
+  //   }
+  // };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // When color theme changes, update the context
+    if (name === 'colorTheme') {
+      setColorTheme(value);
+    }
+    
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
     
     // Clear error when field is modified

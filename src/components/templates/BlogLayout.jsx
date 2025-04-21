@@ -4,6 +4,7 @@ import Hero from '../core/Hero';
 import BlogSection from '../core/BlogSection';
 import Features from '../core/Features';
 import ContactForm from '../core/ContactForm';
+import { useTheme } from '../../lib/context/ThemeContext';
 
 export default function BlogLayout({
   blogName = "The Blog",
@@ -21,13 +22,15 @@ export default function BlogLayout({
   featuredPostsProps = {},
   contactFormProps = {},
   footerProps = {}
-}) {
+})
+ {
+  const { palette } = useTheme();
   return (
     <div className="flex flex-col min-h-screen">
       <Header 
         title={blogName}
         navItems={[
-          { name: "Home", href: "/" },
+          { name: "Home", href: "#" },
           { name: "Articles", href: "#articles" },
           { name: "Categories", href: "#categories" },
           { name: "Contact", href: "#contact" }
@@ -35,7 +38,7 @@ export default function BlogLayout({
         {...headerProps}
       />
       
-      <main className="flex-grow pt-16">
+      <main className="flex-grow">
         <Hero
           title={blogName}
           subtitle={tagline}
@@ -55,24 +58,24 @@ export default function BlogLayout({
                 excerpt: "Learn the basics of web development and how to build your first website.",
                 date: "April 15, 2025",
                 author: "John Doe",
-                image: "/placeholder/400/250",
-                link: "/blog/getting-started"
+                image: "https://cdn.dribbble.com/userupload/33363636/file/original-cfeec33e6ca179655047ca7cc4bffe3f.png?resize=752x&vertical=center",
+                link: "#"
               },
               {
                 title: "10 Tips for Better SEO",
                 excerpt: "Improve your website's search engine rankings with these proven tips.",
                 date: "April 10, 2025",
                 author: "Jane Smith",
-                image: "/placeholder/400/250",
-                link: "/blog/seo-tips"
+                image: "https://cdn.dribbble.com/userupload/17465009/file/original-edf1a277c89ba2580056d84c7e945aa4.png?resize=752x&vertical=center",
+                link: "#"
               },
               {
                 title: "The Future of Web Design",
                 excerpt: "Explore the upcoming trends that will shape the future of web design.",
                 date: "April 5, 2025",
                 author: "Mike Johnson",
-                image: "/placeholder/400/250",
-                link: "/blog/future-web-design"
+                image: "https://cdn.dribbble.com/userupload/24005356/file/original-321f3bf5e872ca21ed7596d4e45f7f2e.png?resize=752x&vertical=center",
+                link: "#"
               }
             ]}
             variant="card"
@@ -88,7 +91,7 @@ export default function BlogLayout({
               {categories.map((category, index) => (
                 <a 
                   key={index} 
-                  href={`/category/${category.name.toLowerCase()}`}
+                  // href={`/category/${category.name.toLowerCase()}`}
                   className="block p-4 border rounded-lg text-center hover:bg-gray-50 transition-colors"
                 >
                   <h3 className="font-bold mb-1">{category.name}</h3>

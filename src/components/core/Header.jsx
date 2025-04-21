@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { useTheme } from '../../lib/context/ThemeContext';
 
 export default function Header({ 
   title = "My Website", 
@@ -11,6 +12,7 @@ export default function Header({
   logoText = "LOGO",
   variant = "default" // default, transparent, colored
 }) {
+  const { palette } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const variants = {
@@ -20,10 +22,10 @@ export default function Header({
   };
   
   return (
-    <header className={`${variants[variant]} relative w-full top-0 z-40`}>
+    <header  style={{ backgroundColor: palette.primary }} className={`relative w-full top-0 z-40`}>
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center">
-          <Link href="/" className="text-xl font-bold">{logoText}</Link>
+          <Link href="/" className="text-xl font-bold" style={{ color: palette.light }}>{logoText}</Link>
         </div>
         
         {/* Mobile menu button */}
@@ -44,7 +46,7 @@ export default function Header({
           <ul className="flex space-x-8">
             {navItems.map((item, index) => (
               <li key={index}>
-                <Link href={item.href} className="hover:underline">{item.name}</Link>
+                <Link href={item.href} style={{ color: palette.light }} className="hover:underline">{item.name}</Link>
               </li>
             ))}
           </ul>
@@ -53,11 +55,11 @@ export default function Header({
       
       {/* Mobile navigation */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white text-gray-800 shadow-lg">
+        <div className="md:hidden  text-gray-800 shadow-lg">
           <ul className="px-4 py-2">
             {navItems.map((item, index) => (
               <li key={index} className="py-2">
-                <Link href={item.href} onClick={() => setIsMenuOpen(false)} className="block hover:underline">{item.name}</Link>
+                <Link href={item.href} onClick={() => setIsMenuOpen(false)} className="block hover:underline" style={{ color: palette.light }}>{item.name}</Link>
               </li>
             ))}
           </ul>

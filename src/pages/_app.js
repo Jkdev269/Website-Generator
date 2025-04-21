@@ -4,11 +4,11 @@ import { WebsiteProvider } from '../lib/context/WebsiteContext';
 
 export default function App({ Component, pageProps }) {
   return (
-    <WebsiteProvider>
  <ThemeProvider>
+    <WebsiteProvider>
       <Component {...pageProps} />
-    </ThemeProvider>
     </WebsiteProvider>
+    </ThemeProvider>
    
   );
 }

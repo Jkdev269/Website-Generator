@@ -44,7 +44,7 @@ export const generateLayout = (config) => {
           colorTheme={colorTheme}
           header={<Header companyName={companyName} pages={pages} colorTheme={colorTheme} />}
           content={renderPortfolioContent(config,colorTheme)}
-          footer={<Footer companyName={companyName} colorTheme={config.colorTheme} />}
+          footer={<Footer companyName={companyName} colorTheme={colorTheme} />}
         />
       );
     

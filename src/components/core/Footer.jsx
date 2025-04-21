@@ -1,3 +1,4 @@
+import { useTheme } from '../../lib/context/ThemeContext';
 export default function Footer({
     companyName = "Company Name",
     links = [
@@ -9,6 +10,7 @@ export default function Footer({
     ],
     variant = "default" // default, minimal, colored
   }) {
+    const { palette } = useTheme();
     const variants = {
       default: "bg-gray-100 text-gray-700",
       minimal: "bg-white text-gray-600 border-t",
@@ -18,8 +20,8 @@ export default function Footer({
     const currentYear = new Date().getFullYear();
     
     return (
-      <footer className={`${variants[variant]} py-8`}>
-        <div className="container mx-auto px-4">
+      <footer style={{ backgroundColor: palette.dark }} className={` py-8`}>
+        <div className="container mx-auto px-4" style={{ color: palette.light }}>
           {variant !== 'minimal' && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div>
