@@ -7,12 +7,25 @@ import colorThemes from '../components/layout-generator/ThemeManager';
 
 export default function PreviewPage() {
   const router = useRouter();
-  const { websiteSpecs, generationStatus, generateWebsite } = useWebsite();
+  const { websiteSpecs, generationStatus, generateWebsite ,setWebsiteSpecs } = useWebsite();
   const [previewContent, setPreviewContent] = useState(null);
   
   // If no website specs, redirect to generate page
   useEffect(() => {
+    // Try to load from localStorage if context is empty
     if (!websiteSpecs) {
+      const storedWebsiteSpecs = localStorage.getItem('websiteSpecs');
+      if (storedWebsiteSpecs) {
+        try {
+          // Parse and set the website specs from localStorage
+          const parsedSpecs = JSON.parse(storedWebsiteSpecs);
+          setWebsiteSpecs(parsedSpecs); // This assumes setWebsiteSpecs is available from context
+          return; // Exit early to prevent redirect
+        } catch (error) {
+          console.error('Error parsing stored website specs:', error);
+        }
+      }
+      // Only redirect if we couldn't load from localStorage
       router.replace('/generate');
     } else {
       // Generate preview content when specs are available
